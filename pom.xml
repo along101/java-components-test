@@ -23,6 +23,7 @@
         <module>java8</module>
         <module>mock</module>
         <module>jmh</module>
+        <module>xnio</module>
     </modules>
 
     <properties>

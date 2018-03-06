@@ -32,11 +32,15 @@
 package org.sample;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.concurrent.TimeUnit;
+
+@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 public class MyBenchmark {
 
     @Benchmark
@@ -48,6 +52,7 @@ public class MyBenchmark {
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
+                .warmupIterations(2)
                 .forks(2).build();
         new Runner(options).run();
     }
