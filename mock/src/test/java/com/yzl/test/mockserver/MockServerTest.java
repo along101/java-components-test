@@ -1,4 +1,4 @@
-package com.yzl.test.mock;
+package com.yzl.test.mockserver;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockserver.model.HttpRequest.request;
