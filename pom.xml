@@ -24,6 +24,7 @@
         <module>mock</module>
         <module>jmh</module>
         <module>xnio</module>
+        <module>java-common</module>
     </modules>
 
     <properties>
