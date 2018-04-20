@@ -25,6 +25,7 @@
         <module>jmh</module>
         <module>xnio</module>
         <module>java-common</module>
+        <module>jersey-test</module>
     </modules>
 
     <properties>
