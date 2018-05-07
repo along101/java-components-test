@@ -26,6 +26,8 @@
         <module>xnio</module>
         <module>java-common</module>
         <module>jersey-test</module>
+        <module>archauis-test</module>
+        <module>jmx-test</module>
     </modules>
 
     <properties>
