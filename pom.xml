@@ -28,6 +28,7 @@
         <module>jersey-test</module>
         <module>archauis-test</module>
         <module>jmx-test</module>
+        <module>java-reflect</module>
     </modules>
 
     <properties>
