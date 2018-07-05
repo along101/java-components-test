@@ -1,5 +1,6 @@
 package com.along101.jackson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +21,7 @@ public class JacksonTest {
         cat.setName("tom");
         cat.setAge(1);
         cat.setOwner("yzl");
+        cat.setNotuse("not use");
 
         ObjectMapper objectMapper = new ObjectMapper();
         //默认字段为null会输出，这里可以设置为null不输出
@@ -41,6 +43,9 @@ public class JacksonTest {
         private int age;
 
         private String Owner;
+
+        @JsonIgnore
+        private String notuse;
 
         public String getName() {
             return name;
@@ -64,6 +69,14 @@ public class JacksonTest {
 
         public void setOwner(String owner) {
             Owner = owner;
+        }
+
+        public String getNotuse() {
+            return notuse;
+        }
+
+        public void setNotuse(String notuse) {
+            this.notuse = notuse;
         }
     }
 
