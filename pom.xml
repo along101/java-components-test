@@ -30,6 +30,7 @@
         <module>jmx-test</module>
         <module>java-reflect</module>
         <module>json</module>
+        <module>javapoet-test</module>
     </modules>
 
     <properties>
