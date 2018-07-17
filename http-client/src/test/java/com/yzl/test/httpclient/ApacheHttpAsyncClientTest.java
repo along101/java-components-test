@@ -1,6 +1,5 @@
 package com.yzl.test.httpclient;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.RequestBuilder;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**

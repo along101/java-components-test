@@ -31,6 +31,7 @@
         <module>java-reflect</module>
         <module>json</module>
         <module>javapoet-test</module>
+        <module>maven-plugin-test</module>
     </modules>
 
     <properties>
