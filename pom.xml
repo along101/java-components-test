@@ -33,6 +33,7 @@
         <module>javapoet-test</module>
         <module>maven-plugin-test</module>
         <module>mapstruct-test</module>
+        <module>apache-commons</module>
     </modules>
 
     <properties>

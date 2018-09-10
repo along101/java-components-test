@@ -3,11 +3,13 @@ package com.yzl.test.mockito;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -101,17 +103,34 @@ public class MockitoTest {
 
     @Test
     public void argumentCaptorTest() {
-        List mock = mock(List.class);
-        List mock2 = mock(List.class);
+        List<String> mock = mock(List.class);
+        List<String> mock2 = mock(List.class);
         mock.add("John");
         mock2.add("Brian");
         mock2.add("Jim");
-        ArgumentCaptor argument = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
         verify(mock).add(argument.capture());
         assertEquals("John", argument.getValue());
         verify(mock2, times(2)).add(argument.capture());
         assertEquals("Jim", argument.getValue());
         assertArrayEquals(new Object[]{"John","Brian", "Jim"}, argument.getAllValues().toArray());
+    }
+
+    @Test
+    public void argumentCaptorTest1() {
+        Map<String,String> myMap = new HashMap<>();
+        myMap.put("a","A");
+        myMap.put("b","B");
+        myMap.put("c","C");
+        Map<String,String> mock = mock(Map.class);
+
+        when(mock.get(anyString())).thenAnswer((Answer<String>) invocation -> {
+            String arg = invocation.getArgumentAt(0,String.class);
+            return myMap.get(arg);
+        });
+
+        String a = mock.get("a");
+        Assert.assertEquals("A",a);
     }
 
     @Test
