@@ -24,7 +24,7 @@ public class TCPClient {
         // 打开并注册选择器到信道
         Selector selector = Selector.open();
         socketChannel.register(selector, SelectionKey.OP_READ);
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -63,7 +63,9 @@ public class TCPClient {
                     }
                 }
             }
-        }).start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void sendMsg(String message) throws IOException {
@@ -71,7 +73,7 @@ public class TCPClient {
         socketChannel.write(writeBuffer);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         TCPClient client = new TCPClient();
         client.connect("localhost", 8001);
         StringBuilder s = new StringBuilder();
@@ -79,5 +81,8 @@ public class TCPClient {
             s.append("1");
         }
         client.sendMsg(s.toString());
+        Thread.sleep(1000);
+        client.socketChannel.close();
+        Thread.sleep(10000);
     }
 }
