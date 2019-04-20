@@ -1,10 +1,11 @@
 package com.yzl.java.compile;
 
-import java.net.URLClassLoader;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
- * 自定义类加载器
+ * @author yzl
+ * @date 2019-04-19
  */
 public class DynamicClassLoader extends URLClassLoader {
     public DynamicClassLoader(ClassLoader parent) {
@@ -15,8 +16,8 @@ public class DynamicClassLoader extends URLClassLoader {
         return this.findClass(className);
     }
 
-    public Class loadClass(String fullName, JavaClassObject jco) {
-        byte[] classData = jco.getBytes();
+    public Class loadClass(String fullName, JavaClassObject javaClassObject) {
+        byte[] classData = javaClassObject.getBytes();
         return this.defineClass(fullName, classData, 0, classData.length);
     }
 }
