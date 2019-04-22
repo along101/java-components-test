@@ -7,6 +7,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -25,9 +26,9 @@ public class JavaCodeCompileManager {
 
     private Map<String, String> codeCache = new ConcurrentHashMap<>();
 
-    private Map<String, Class> classCache = new ConcurrentHashMap<>();
+    private Map<String, DynamicClassLoader> classCache = new ConcurrentHashMap<>();
 
-    public CompileResult compile(String name, String code) {
+    public static CompileResult compile(String name, String code) {
         CompileResult compileResult = new CompileResult();
         JavaSourceObject javaFileObject = new JavaSourceObject(name, code);
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -46,22 +47,32 @@ public class JavaCodeCompileManager {
         return compileResult;
     }
 
-    public CompileResult compileAndloadClass(String name, String code) {
-        if (existCatch(code)) {
+    public CompileResult compileAndLoadClass(String name, String code) {
+        if (existCache(name, code)) {
             return CompileResult.create(true);
         }
         synchronized (this) {
             //double check
-            if (existCatch(code)) {
+            if (existCache(name, code)) {
                 return CompileResult.create(true);
             }
             CompileResult compileResult = compile(name, code);
+            DynamicClassLoader dynamicClassLoader = classCache.get(name);
+            //如果classLoader存在，先关闭
+            if (dynamicClassLoader != null) {
+                try {
+                    dynamicClassLoader.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("close classLoader error.", e);
+                }
+            }
+            dynamicClassLoader = new DynamicClassLoader(this.getClass().getClassLoader());
+            classCache.put(name, dynamicClassLoader);
             if (compileResult.isSuccess()) {
-                DynamicClassLoader dynamicClassLoader = new DynamicClassLoader(this.getClass().getClassLoader());
                 for (JavaClassObject classObject : compileResult.getClassObjects()) {
                     try {
                         Class clazz = dynamicClassLoader.loadClass(classObject.getName(), classObject);
-                        this.classCache.put(clazz.getName(), clazz);
+                        this.classCache.put(clazz.getName(), dynamicClassLoader);
                     } catch (Exception e) {
                         compileResult.addLoadClassMessage("load class " + classObject.getName() + " error, " + e.getMessage());
                         compileResult.setSuccess(false);
@@ -69,27 +80,39 @@ public class JavaCodeCompileManager {
                 }
             }
             if (compileResult.isSuccess()) {
-                this.putCatch(code);
+                this.putCache(name, code);
             }
             return compileResult;
         }
     }
 
     public Class getClass(String name) {
-        return this.classCache.get(name);
+        try {
+            if (this.classCache.get(name) == null) {
+                return null;
+            }
+            return this.classCache.get(name).loadClass(name);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
-    private boolean existCatch(String code) {
-        String md5 = Md5Crypt.md5Crypt(code.getBytes());
-        return this.codeCache.get(md5) != null;
+    private boolean existCache(String name, String code) {
+        if (this.codeCache.get(name) != null) {
+            String cacheMd5 = Md5Crypt.md5Crypt(this.codeCache.get(name).getBytes());
+            String md5 = Md5Crypt.md5Crypt(code.getBytes());
+            if (cacheMd5.equals(md5)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void putCatch(String code) {
-        String md5 = Md5Crypt.md5Crypt(code.getBytes());
-        this.codeCache.put(md5, code);
+    private void putCache(String name, String code) {
+        this.codeCache.put(name, code);
     }
 
-    private List<String> getOptions() {
+    private static List<String> getOptions() {
         List<String> options = new ArrayList<>();
         options.add("-encoding");
         options.add("UTF-8");
@@ -98,9 +121,9 @@ public class JavaCodeCompileManager {
         return options;
     }
 
-    private String getClassPath() {
+    private static String getClassPath() {
         StringBuilder sb = new StringBuilder();
-        for (URL url : ((URLClassLoader) this.getClass().getClassLoader()).getURLs()) {
+        for (URL url : ((URLClassLoader) JavaCodeCompileManager.class.getClassLoader()).getURLs()) {
             String p = url.getFile();
             sb.append(p).append(File.pathSeparator);
         }

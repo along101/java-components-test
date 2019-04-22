@@ -21,10 +21,19 @@ public class JavaCodeCompileManagerTest {
                 "    }\n" +
                 "} class A{}";
         JavaCodeCompileManager manager = new JavaCodeCompileManager();
-        CompileResult result = manager.compileAndloadClass(name, javaCode);
+        CompileResult result = manager.compileAndLoadClass(name, javaCode);
         System.out.println(result.getMessage());
         Assert.assertTrue(result.isSuccess());
-        Class clazz = manager.getClass(name);
-        Assert.assertNotNull(clazz);
+        Assert.assertNotNull(manager.getClass(name));
+        Assert.assertNotNull(manager.getClass("com.test.java.compile.A"));
+
+        //修改后编译
+        javaCode = javaCode + " class B{}";
+        manager.compileAndLoadClass(name, javaCode);
+        System.out.println(result.getMessage());
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertNotNull(manager.getClass(name));
+        Assert.assertNotNull(manager.getClass("com.test.java.compile.A"));
+        Assert.assertNotNull(manager.getClass("com.test.java.compile.B"));
     }
 }
