@@ -1,5 +1,4 @@
 package com.yzl.java.compile;
-
 import org.apache.commons.codec.digest.Md5Crypt;
 
 import javax.tools.DiagnosticCollector;
@@ -18,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * java 代码编译管理器
+ * TODO 销毁过期的缓存和动态编译的类
  *
  * @author yzl
  * @date 2019-04-20
