@@ -129,16 +129,16 @@ public class MockitoTest {
         verify(mock2, times(2)).add(argument.capture());
         assertEquals("Jim", argument.getValue());
         //所有捕获的参数
-        assertArrayEquals(new Object[]{"John","Brian", "Jim"}, argument.getAllValues().toArray());
+        assertArrayEquals(new Object[]{"John", "Brian", "Jim"}, argument.getAllValues().toArray());
     }
 
     @Test
     public void argumentCaptorTest1() {
-        Map<String,String> myMap = new HashMap<>();
-        myMap.put("a","A");
-        myMap.put("b","B");
-        myMap.put("c","C");
-        Map<String,String> mock = mock(Map.class);
+        Map<String, String> myMap = new HashMap<>();
+        myMap.put("a", "A");
+        myMap.put("b", "B");
+        myMap.put("c", "C");
+        Map<String, String> mock = mock(Map.class);
 
         when(mock.get(anyString())).thenAnswer((Answer<String>) invocation -> {
             String arg = invocation.getArgumentAt(0, String.class);
@@ -146,7 +146,7 @@ public class MockitoTest {
         });
 
         String a = mock.get("a");
-        Assert.assertEquals("A",a);
+        Assert.assertEquals("A", a);
     }
 
     @Test
@@ -159,4 +159,29 @@ public class MockitoTest {
         System.out.println(mock.get(0));
         System.out.println(mock.toArray().length);
     }
+
+    @Test
+    public void doAnswer1() {
+        Map<String, String> mock = mock(Map.class);
+        doAnswer(i -> {
+            System.out.println(i.getArguments()[0]);
+            return null;
+        }).when(mock).get("a");
+
+        mock.get("a");
+    }
+
+    @Test
+    public void voidTest() {
+        Map<String, String> mock = mock(Map.class);
+        doAnswer(i -> {
+            System.out.println(i.getArguments()[0]);
+            return null;
+        }).when(mock).putAll(any());
+
+        Map<String, String> myMap = new HashMap<>();
+        myMap.put("a", "A");
+        mock.putAll(myMap);
+    }
+
 }
