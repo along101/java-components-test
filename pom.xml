@@ -34,6 +34,7 @@
         <module>maven-plugin-test</module>
         <module>mapstruct-test</module>
         <module>apache-commons</module>
+        <module>groovy-test</module>
     </modules>
 
     <properties>

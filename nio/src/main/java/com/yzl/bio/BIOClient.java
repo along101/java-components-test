@@ -12,15 +12,37 @@ import java.net.Socket;
  */
 public class BIOClient {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Socket socket = new Socket();
         socket.connect(new InetSocketAddress("localhost", 8002));
-        OutputStream os = socket.getOutputStream();
-        os.write("123123".getBytes());
-        InputStream in = socket.getInputStream();
-        byte[] b = new byte[1024];
-        int n = in.read(b);
-        System.out.println(new String(b, 0, n));
+        new Thread(() -> {
+            for (int i = 0; i < 100; i++) {
+                try {
+                    OutputStream os = socket.getOutputStream();
+                    os.write(("" + i).getBytes());
+                    Thread.sleep(2000);
+                    os.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                InputStream in = null;
+                in = socket.getInputStream();
+                byte[] b = new byte[1024];
+                int n = 0;
+                while ((n = in.read(b)) > 0) {
+                    System.out.println(new String(b, 0, n));
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        Thread.sleep(1000 * 100);
         socket.close();
     }
 }
