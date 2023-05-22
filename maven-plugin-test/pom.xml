@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>along101-test-plugin</module>
-        <module>plugin-test</module>
+<!--        <module>plugin-test</module>-->
     </modules>
 
 </project>

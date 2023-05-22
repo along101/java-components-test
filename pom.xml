@@ -35,6 +35,7 @@
         <module>mapstruct-test</module>
         <module>apache-commons</module>
         <module>groovy-test</module>
+        <module>trace-test</module>
     </modules>
 
     <properties>
